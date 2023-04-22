@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wxs.mapper.ArticleMapper">
+<mapper namespace="com.wx.mapper.ArticleMapper">
 
     <select id="list" resultType="com.wxs.entities.Article">
         select * from urls;

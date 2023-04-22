@@ -2,8 +2,7 @@ package com.wx.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.wx.entities.Article;
-import com.wx.mapper.ArticleMapper;
-import com.wx.mapper.UrlsMapper;
+import com.wx.service.es.WriteEsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +15,14 @@ import java.util.Optional;
 @Service
 public class KafkaService {
 
-    @Autowired
-    private UrlsMapper urlsMapper;
+//    @Autowired
+//    private UrlsMapper urlsMapper;
+//
+//    @Autowired
+//    private ArticleMapper articleMapper;
 
     @Autowired
-    private ArticleMapper articleMapper;
+    private WriteEsService writeEsService;
 
     @KafkaListener(topics = "test", groupId = "console-consumer-90771")
     public void listen(ConsumerRecord<?, ?> record) {
@@ -37,9 +39,9 @@ public class KafkaService {
             article.setType("article");
             article.setContent(pj.getString("content"));
             System.out.println("文章》》》"+ pj.getString("content"));
-            articleMapper.insert(article);
+//            articleMapper.insert(article);
 
-
+            writeEsService.writeToEs(pj);
 
             // 将数据写入mysql
 //            Urls urls = new Urls();

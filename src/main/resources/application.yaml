@@ -18,5 +18,6 @@ spring:
     active: prod
 elasticsearch:
   host: 192.168.68.111
-    username:
-    passwrod:
+  port: 9200
+  username:
+  passwrod:
