@@ -18,10 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
-public class WriteEsService implements WriteToEs{
+public class WriteEsService implements WriteEs {
 
 
 
@@ -39,10 +40,12 @@ public class WriteEsService implements WriteToEs{
      * @return
      */
     public JSONObject index(JSONObject article, String index, String id) {
-        if (StringUtils.isNullOrEmpty(index))
+        if (StringUtils.isNullOrEmpty(index)) {
+            return RequestUtils.validParam("index不允许为空");
+        }
 
         client = esCommService.getEsClient();
-        System.out.println("插入数据: " + article);
+        log.info("插入数据:{} " + article);
         try {
             String articleId = "";
             if (StringUtils.isNullOrEmpty(id)) {
@@ -58,12 +61,13 @@ public class WriteEsService implements WriteToEs{
                         .refresh(Refresh.True)
                 ).id();
             }
-            System.out.println("插入数据id=" + articleId);
+            log.info("插入数据id={}", articleId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return requestUtils.successResp();
     }
+
 
 
     public void es() throws IOException {
@@ -77,17 +81,10 @@ public class WriteEsService implements WriteToEs{
                         s.index("articles"),
                 JSONObject.class);
 
+        List<Hit<JSONObject>> hits = search.hits().hits();
         for (Hit<JSONObject> hit : search.hits().hits()) {
             System.out.println("====>"+hit);
         }
-
-    }
-
-
-    public static void main(String[] args) throws IOException {
-        WriteEsService esService = new WriteEsService();
-
-        esService.es();
 
     }
 
